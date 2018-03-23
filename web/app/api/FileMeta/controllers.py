@@ -36,7 +36,7 @@ def download_xml():
     if file_meta.protected == True and file_meta.password != file_request['password']:
         response = jsonify({'error': 'wrong password'})
         return response
-    file_json = json.loads(open('static/JSON/{}'.format(link), 'r').read())
+    file_json = json.loads(open('/static/JSON/{}'.format(link), 'r').read())
     xml = dicttoxml(file_json)
     return xml
 
@@ -59,7 +59,7 @@ def get_file():
     if file_meta.protected == True and file_meta.password != file_request['password']:
         response = jsonify({'error': 'wrong password'})
         return response
-    file_content = json.loads(open('static/JSON/{}'.format(link), 'r').read())
+    file_content = json.loads(open('/static/JSON/{}'.format(link), 'r').read())
     result_meta = file_meta_schema.dump(file_meta).data
     return jsonify({'meta': result_meta, 'content': file_content})
 
@@ -78,7 +78,7 @@ def upload_file():
         file_json.filename = link
         filename = secure_filename(file_json.filename)
         file_json.save(os.path.join('static/JSON', filename))
-        weight = os.stat('static/JSON/{}'.format(link)).st_size
+        weight = os.stat('/static/JSON/{}'.format(link)).st_size
         file_meta = FileMeta(
             protected=False,
             password=None,
@@ -111,7 +111,7 @@ def delete_file():
     if file_meta.protected == True and file_meta.password != file_request['password']:
         response = jsonify({'error': 'wrong password'})
         return response
-    os.remove(os.path.join('static/JSON', link))
+    os.remove(os.path.join('/static/JSON', link))
     db.session.delete(file_meta)
     db.session.commit()
     response = jsonify({'message': 'successfully deleted'})
@@ -183,6 +183,6 @@ def update_file():
             return response, 400
         else:
             file_content = file_request['content']
-            file_json = open(os.path.join('static/JSON', link), 'w').write(file_content)
+            file_json = open(os.path.join('/static/JSON', link), 'w').write(file_content)
             response = jsonify({'message': 'file updated'})
             return response
