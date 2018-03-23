@@ -1,0 +1,25 @@
+version: '3.1'
+
+volumes:
+  db_volume:
+
+services :
+  db:
+    image: postgres:10-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+        - POSTGRES_USER=test
+        - POSTGRES_PASSWORD=test
+        - POSTGRES_DB=test
+  web:
+    build: ./web
+    restart: always
+    ports:
+      - 80:80
+    links:
+     - db
+ 
